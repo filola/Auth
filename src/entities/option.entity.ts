@@ -7,8 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'options', orderBy: { id: 'ASC' } })
-@Unique([''])
-export class Product extends BaseEntity {
+export class option extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
