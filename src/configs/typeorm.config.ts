@@ -20,12 +20,9 @@ import 'dotenv/config';
 export const typeORMConfig: TypeOrmModuleOptions = {
   type: 'mysql',
   host: 'localhost',
-  port: 3306,
-  username: 'root',
-  password: 'q1w2e3r4',
-  // port: process.env.PORT,
-  // username: process.env.USER,
-  // password: process.env.PASSWORD,
+  port: process.env.PORT,
+  username: process.env.USER,
+  password: process.env.PASSWORD,
   database: 'mannamchu',
   entities: [__dirname + '/../entities/*.entity.{js,ts}'],
   // synchronize 옵션은 서비스 구동시 소스코드 기반으로 데이터를 동기화 할지 여부이다
