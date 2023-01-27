@@ -7,11 +7,11 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Product } from './product.entity';
-import { User } from './user.entity';
+import { Products } from './product.entity';
+import { Users } from './user.entity';
 
 @Entity({ name: 'carts' })
-export class Cart extends BaseEntity {
+export class Carts extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -19,16 +19,16 @@ export class Cart extends BaseEntity {
   quantuty: number;
 
   @Column()
-  User_id: number;
+  UserId: number;
 
   @Column()
-  Product_id: number;
+  ProductId: number;
 
-  @ManyToOne(() => Product, (product) => product.cart)
+  @ManyToOne(() => Products, (product) => product.cart)
   @JoinColumn([{ name: 'Product_id', referencedColumnName: 'id' }])
-  Product: Product;
+  Product: Products;
 
-  @ManyToOne(() => User, (user) => user.cart)
+  @ManyToOne(() => Users, (user) => user.cart)
   @JoinColumn([{ name: 'User_id', referencedColumnName: 'id' }])
-  User: User;
+  User: Users;
 }

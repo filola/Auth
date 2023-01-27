@@ -6,16 +6,16 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Product_Tag } from './productTag.entity';
+import { ProductTags } from './productTag.entity';
 
 @Entity({ name: 'tags' })
-export class Tag extends BaseEntity {
+export class Tags extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  tag_name: string;
+  tagName: string;
 
-  @OneToMany(() => Product_Tag, (productTag) => productTag.Tag)
-  prdouct_tag: Product_Tag[];
+  @OneToMany(() => ProductTags, (productTag) => productTag.Tag)
+  prdouctTag: ProductTags[];
 }

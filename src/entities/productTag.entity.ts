@@ -7,11 +7,11 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Product } from './product.entity';
-import { Tag } from './tag.entity';
+import { Products } from './product.entity';
+import { Tags } from './tag.entity';
 
 @Entity({ name: 'product_tag' })
-export class Product_Tag extends BaseEntity {
+export class ProductTags extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -19,16 +19,16 @@ export class Product_Tag extends BaseEntity {
   //   product: string;
 
   @Column()
-  Tag_id: number;
+  TagId: number;
 
-  @ManyToOne(() => Tag, (tag) => tag.prdouct_tag)
+  @ManyToOne(() => Tags, (tag) => tag.prdouctTag)
   @JoinColumn([{ name: 'Tag_id', referencedColumnName: 'id' }])
-  Tag: Tag;
+  Tag: Tags;
 
   @Column()
-  Product_id: number;
+  ProductId: number;
 
-  @ManyToOne(() => Product, (product) => product.product_tag)
+  @ManyToOne(() => Products, (product) => product.productTag)
   @JoinColumn([{ name: 'Product_id', referencedColumnName: 'id' }])
-  Product: Product;
+  Product: Products;
 }

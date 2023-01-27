@@ -8,12 +8,12 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
-import { Cart } from './cart.entity';
-import { Wishlist } from './wishlist.entity';
+import { Carts } from './cart.entity';
+import { Wishlists } from './wishlist.entity';
 
 @Entity('users')
 @Unique(['email', 'phone'])
-export class User extends BaseEntity {
+export class Users extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -38,11 +38,11 @@ export class User extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Wishlist, (wishlist) => wishlist.User, {
+  @OneToMany(() => Wishlists, (wishlist) => wishlist.User, {
     onDelete: 'CASCADE',
   })
-  wishlist: Wishlist[];
+  wishlist: Wishlists[];
 
-  @OneToMany(() => Cart, (cart) => cart.User)
-  cart: Cart[];
+  @OneToMany(() => Carts, (cart) => cart.User)
+  cart: Carts[];
 }

@@ -7,25 +7,25 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Product } from './product.entity';
-import { User } from './user.entity';
+import { Products } from './product.entity';
+import { Users } from './user.entity';
 
 @Entity({ name: 'wishlist' })
-export class Wishlist extends BaseEntity {
+export class Wishlists extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  User_id: number;
+  UserId: number;
 
   @Column()
-  Product_id: number;
+  ProductId: number;
 
-  @ManyToOne(() => Product, (product) => product.wishlist)
+  @ManyToOne(() => Products, (product) => product.wishlist)
   @JoinColumn([{ name: 'Product_id', referencedColumnName: 'id' }])
-  Product: Product;
+  Product: Products;
 
-  @ManyToOne(() => User, (user) => user.wishlist)
+  @ManyToOne(() => Users, (user) => user.wishlist)
   @JoinColumn([{ name: 'User_id', referencedColumnName: 'id' }])
-  User: User;
+  User: Users;
 }

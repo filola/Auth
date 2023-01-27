@@ -8,13 +8,13 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Cart } from './cart.entity';
-import { Product_Tag } from './productTag.entity';
-import { Tag } from './tag.entity';
-import { Wishlist } from './wishlist.entity';
+import { Carts } from './cart.entity';
+import { ProductTags } from './productTag.entity';
+import { Tags } from './tag.entity';
+import { Wishlists } from './wishlist.entity';
 
 @Entity({ name: 'products', orderBy: { id: 'ASC' } })
-export class Product extends BaseEntity {
+export class Products extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -25,7 +25,7 @@ export class Product extends BaseEntity {
   price: number;
 
   @Column({ default: true })
-  like_count: number;
+  likeCount: number;
 
   @Column()
   description: string;
@@ -34,16 +34,16 @@ export class Product extends BaseEntity {
   origin: string;
 
   @Column({ nullable: true })
-  sale_rate: number;
+  saleRate: number;
 
-  @OneToMany(() => Product_Tag, (productTag) => productTag.Product, {
+  @OneToMany(() => ProductTags, (productTag) => productTag.Product, {
     onDelete: 'CASCADE',
   })
-  product_tag: Product_Tag[];
+  productTag: ProductTags[];
 
-  @OneToMany(() => Wishlist, (wishlist) => wishlist.Product)
-  wishlist: Wishlist[];
+  @OneToMany(() => Wishlists, (wishlist) => wishlist.Product)
+  wishlist: Wishlists[];
 
-  @OneToMany(() => Cart, (cart) => cart.Product)
-  cart: Cart[];
+  @OneToMany(() => Carts, (cart) => cart.Product)
+  cart: Carts[];
 }

@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'options', orderBy: { id: 'ASC' } })
-export class option extends BaseEntity {
+export class Options extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -18,7 +18,7 @@ export class option extends BaseEntity {
   price: number;
 
   @Column({ default: true })
-  like_count: number;
+  likeCount: number;
 
   @Column()
   description: string;
@@ -27,5 +27,5 @@ export class option extends BaseEntity {
   origin: string;
 
   @Column({ nullable: true })
-  sale_rate: number;
+  saleRate: number;
 }
