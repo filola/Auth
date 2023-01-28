@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { Users } from '../entities/user.entity';
 import { SignUpDto } from './dto/signup-user.dto';
 
-@EntityRepository(User)
-export class UserRepository extends Repository<User> {
+@EntityRepository(Users)
+export class UserRepository extends Repository<Users> {
   async signup(signUpDto: SignUpDto): Promise<void> {}
 }
