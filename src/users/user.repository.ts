@@ -5,4 +5,5 @@ import { SignUpDto } from './dto/signup-user.dto';
 @EntityRepository(Users)
 export class UserRepository extends Repository<Users> {
   async signup(signUpDto: SignUpDto): Promise<void> {}
+  async signin(signUpDto: SignUpDto): Promise<void> {}
 }
