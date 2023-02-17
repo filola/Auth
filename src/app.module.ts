@@ -13,7 +13,7 @@ import { Users } from './entities/user.entity';
 import { ProductTags } from './entities/productTag.entity';
 import { Tags } from './entities/tag.entity';
 import { Wishlists } from './entities/wishlist.entity';
-import { AuthService } from './auth/auth.service';
+import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -51,7 +51,7 @@ import { AuthModule } from './auth/auth.module';
     OrdersModule,
     AuthModule,
   ],
-  providers: [AuthService],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
