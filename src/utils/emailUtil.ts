@@ -36,12 +36,7 @@ export function SendMail(body: any, files: any) {
       subject: 'test',
       attachments: attachList,
       html:
-        '<p>Follow the instructions here to download SparkAR Studio and preview the effect on your device.<br>' +
-        'When you are ready, follow the instructions here to publish your effect on the Spark AR Hub<br>' +
-        'If you would like to edit, or create another effect, return to AR Video Studio.<br>' +
-        'This data will be deleted in a week.<br><br>' +
-        'If you have more questions, check out the FAQ here.<br><br>' +
-        'Happy creating!</p>',
+        '<p>test</p>',
     },
     (err: any, info: { envelope: object; messageId: string }) => {
       if (err) {
