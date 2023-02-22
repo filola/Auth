@@ -1,6 +1,8 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { User } from 'src/decorators/user.decorator';
 import { SendMail } from 'src/utils/emailUtil';
 import { AuthService } from './auth.service';
 import { CheckEmailDto } from './dto/CheckEmail.dto';
@@ -33,7 +35,66 @@ export class AuthController {
 
   @ApiOperation({ summary: 'user login' })
   @Post('login')
-  loginIn(@Body() body: LoginUserDto) {
-    return this.authService.validateUser(body);
+  async loginIn(
+    @Body() body: LoginUserDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const accessToken = await this.authService.validateUser(
+      body,
+      'accessToken',
+    );
+    const refreshToken = await this.authService.jwtGenerate(
+      accessToken.userId,
+      'refreshToken',
+    );
+
+    await this.authService.pushRefreshToken(
+      accessToken.userId,
+      refreshToken.accessToken,
+    );
+
+    response.header('Access-Control-Allow-Credentials', 'true');
+
+    response.cookie('ACCESS_TOKEN', accessToken.accessToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: 'none',
+      domain: 'localhost',
+    });
+
+    response.cookie('REFRESH_LOGIN_TOKEN', refreshToken.accessToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: 'none',
+      domain: 'localhost',
+    });
+    return true;
+  }
+
+  @ApiOperation({ summary: 'user logout' })
+  @Post('logout')
+  @UseGuards(AuthGuard('refresh-token'))
+  async loginOut(@User() user, @Res({ passthrough: true }) response: Response) {
+    await this.authService.deleteRefreshToken(user.accessToken.userId);
+    response.header('Access-Control-Allow-Credentials', 'true');
+
+    response.cookie('ACCESS_TOKEN', '', {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: 'none',
+      domain: 'localhost',
+    });
+
+    response.cookie('REFRESH_LOGIN_TOKEN', '', {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: 'none',
+      domain: 'localhost',
+    });
+    return true;
   }
 }

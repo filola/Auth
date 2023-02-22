@@ -9,9 +9,8 @@ import { JwtStrategy } from './passport/jwt.strategy';
 import { IAuthRepository } from './auth.interface';
 import { Users } from 'src/entities/user.entity';
 import { CacheModule } from 'src/cache/cache.module';
-import { ICacheRepository } from 'src/cache/cache.interface';
-import { CacheRepository } from 'src/cache/cache.repository';
 import { Random } from 'src/utils/Random';
+import { JwtRefreshTokenStrategy } from './passport/jwtRefresh.strategy';
 
 @Module({
   imports: [
@@ -30,11 +29,8 @@ import { Random } from 'src/utils/Random';
       provide: IAuthRepository,
       useClass: AuthRepository,
     },
-    {
-      provide: ICacheRepository,
-      useClass: CacheRepository,
-    },
     JwtStrategy,
+    JwtRefreshTokenStrategy,
     Random,
   ],
 })
