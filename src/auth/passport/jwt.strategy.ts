@@ -1,10 +1,3 @@
-/*
-  ==============================================================================
-    (c) 2022. quantum universe All rights reserved.
-    author : JOOYOUNG KIM
-    start date : 11/08/2022
-  ==============================================================================
-*/
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
