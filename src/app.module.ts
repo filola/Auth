@@ -19,6 +19,18 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: RedisConfigService,
+      inject: [ConfigService],
+  }),
+  LoggerModule.forRoot({
+      pinoHttp: {
+          level: process.env.ENV !== 'prod' ? 'trace' : 'info',
+      },
+  }),
+  DatadogTraceModule.forRoot(),
+  CacheModule,
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
