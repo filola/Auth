@@ -15,6 +15,11 @@ import { Tags } from './entities/tag.entity';
 import { Wishlists } from './entities/wishlist.entity';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { LoggerModule } from 'nestjs-pino';
+import { DatadogTraceModule } from 'nestjs-ddtrace';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { RedisConfigService } from './config/redis.config';
+import { CacheModule } from './cache/cache.module';
 
 @Module({
   imports: [
@@ -23,20 +28,21 @@ import { AuthModule } from './auth/auth.module';
       imports: [ConfigModule],
       useClass: RedisConfigService,
       inject: [ConfigService],
-  }),
-  LoggerModule.forRoot({
+    }),
+    LoggerModule.forRoot({
       pinoHttp: {
-          level: process.env.ENV !== 'prod' ? 'trace' : 'info',
+        level: process.env.ENV !== 'prod' ? 'trace' : 'info',
       },
-  }),
-  DatadogTraceModule.forRoot(),
-  CacheModule,
+    }),
+    DatadogTraceModule.forRoot(),
+    CacheModule,
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         return {
           type: 'mysql',
-          host: 'localhost',
+          // host: 'localhost',
+          host: 'host.docker.internal',
           port: 3306,
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),

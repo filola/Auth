@@ -19,7 +19,8 @@ import 'dotenv/config';
 
 export const typeORMConfig: TypeOrmModuleOptions = {
   type: 'mysql',
-  host: 'localhost',
+  // host: 'localhost',
+  host: 'host.docker.internal',
   port: process.env.PORT,
   username: process.env.USER,
   password: process.env.PASSWORD,
