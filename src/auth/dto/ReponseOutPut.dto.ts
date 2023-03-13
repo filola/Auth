@@ -1,16 +1,36 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { Exclude, Expose } from 'class-transformer';
 
-export class ResponseOutPut {
-  @IsBoolean()
-  @ApiProperty({ description: 'success' })
-  readonly success: boolean;
+export class ResponseOutPut<T> {
+  @Exclude() private readonly success: boolean;
+  @Exclude() private readonly code: number;
+  @Exclude() private readonly data: T;
 
-  @IsNumber()
-  @ApiProperty({ description: 'code' })
-  readonly code: number;
+  private constructor(success: boolean, code: number, data: T) {
+    this.success = success;
+    this.code = code;
+    this.data = data;
+  }
 
-  @IsString()
-  @ApiProperty({ description: 'data' })
-  readonly data: string;
+  static OK<T>(data: T): ResponseOutPut<T> {
+    return new ResponseOutPut<T>(true, 200, data);
+  }
+
+  // @ApiProperty()
+  // @Expose()
+  // get _success(): boolean {
+  //     return this.success;
+  // }
+
+  // @ApiProperty()
+  // @Expose()
+  // get _code(): number {
+  //     return this.code;
+  // }
+
+  // @ApiProperty()
+  // @Expose()
+  // get _data(): T {
+  //     return this.data;
+  // }
 }
