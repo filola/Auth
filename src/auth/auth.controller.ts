@@ -2,6 +2,7 @@ import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { Auth } from 'src/decorators/auth.decorator';
 import { User } from 'src/decorators/user.decorator';
 import { SendMail } from 'src/utils/emailUtil';
 import { AuthService } from './auth.service';
@@ -15,25 +16,25 @@ import { LoginUserDto } from './dto/LoginUserDto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @ApiOperation({ summary: 'user sign in' })
+  @Auth(false, 'user sign up')
   @Post('signIn')
   signIn(@Body() body: CreateUserDto) {
     return this.authService.createUser(body);
   }
 
-  @ApiOperation({ summary: '이메일 중복 확인 및 검증' })
+  @Auth(false, '비밀번호 찾기 전 인증 코드 전송')
   @Post('checkEmail')
   checkEmail(@Body() body: CheckEmailDto) {
     return this.authService.checkEmail(body, SendMail);
   }
 
-  @ApiOperation({ summary: '이메일 검증 코드 확인' })
+  @Auth(false, '이메일 검증 코드 확인')
   @Post('compareEmailCode')
   compareEmailCode(@Body() body: CompareCode) {
     return this.authService.compareEmailCode(body);
   }
 
-  @ApiOperation({ summary: 'user login' })
+  @Auth(false, 'user login')
   @Post('login')
   async loginIn(
     @Body() body: LoginUserDto,
@@ -73,9 +74,8 @@ export class AuthController {
     return true;
   }
 
-  @ApiOperation({ summary: 'user logout' })
+  @Auth('refresh-token', 'user logout')
   @Post('logout')
-  @UseGuards(AuthGuard('refresh-token'))
   async loginOut(@User() user, @Res({ passthrough: true }) response: Response) {
     await this.authService.deleteRefreshToken(user.accessToken.userId);
     response.header('Access-Control-Allow-Credentials', 'true');
