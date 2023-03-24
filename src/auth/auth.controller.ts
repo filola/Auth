@@ -6,10 +6,11 @@ import { Auth } from 'src/decorators/auth.decorator';
 import { User } from 'src/decorators/user.decorator';
 import { SendMail } from 'src/utils/emailUtil';
 import { AuthService } from './auth.service';
-import { CheckEmailDto } from './dto/CheckEmail.dto';
-import { CompareCode } from './dto/CompareCode.dto';
-import { CreateUserDto } from './dto/CreateUserDto';
-import { LoginUserDto } from './dto/LoginUserDto';
+import { CheckEmailDto } from './dto/input/CheckEmail.dto';
+import { CompareCode } from './dto/input/CompareCode.dto';
+import { CreateUserDto } from './dto/input/CreateUserDto';
+import { LoginUserDto } from './dto/input/LoginUserDto';
+import { ResponseOutPut } from './dto/output/ReponseOutPut.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -18,20 +19,23 @@ export class AuthController {
 
   @Auth(false, 'user sign up')
   @Post('signIn')
-  signIn(@Body() body: CreateUserDto) {
-    return this.authService.createUser(body);
+  signIn(@Body() body: CreateUserDto): Promise<ResponseOutPut<null>> {
+    this.authService.createUser(body);
+    return ResponseOutPut.OK(null);
   }
 
   @Auth(false, '비밀번호 찾기 전 인증 코드 전송')
   @Post('checkEmail')
-  checkEmail(@Body() body: CheckEmailDto) {
-    return this.authService.checkEmail(body, SendMail);
+  checkEmail(@Body() body: CheckEmailDto): Promise<ResponseOutPut<null>> {
+    this.authService.checkEmail(body, SendMail);
+    return ResponseOutPut.OK(null);
   }
 
   @Auth(false, '이메일 검증 코드 확인')
   @Post('compareEmailCode')
-  compareEmailCode(@Body() body: CompareCode) {
-    return this.authService.compareEmailCode(body);
+  compareEmailCode(@Body() body: CompareCode): Promise<ResponseOutPut<null>> {
+    this.authService.compareEmailCode(body);
+    return ResponseOutPut.OK(null);
   }
 
   @Auth(false, 'user login')
@@ -39,7 +43,7 @@ export class AuthController {
   async loginIn(
     @Body() body: LoginUserDto,
     @Res({ passthrough: true }) response: Response,
-  ) {
+  ): Promise<ResponseOutPut<null>> {
     const accessToken = await this.authService.validateUser(
       body,
       'accessToken',
@@ -71,12 +75,15 @@ export class AuthController {
       sameSite: 'none',
       domain: 'localhost',
     });
-    return true;
+    return ResponseOutPut.OK(null);
   }
 
   @Auth('refresh-token', 'user logout')
   @Post('logout')
-  async loginOut(@User() user, @Res({ passthrough: true }) response: Response) {
+  async loginOut(
+    @User() user,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<ResponseOutPut<null>> {
     await this.authService.deleteRefreshToken(user.accessToken.userId);
     response.header('Access-Control-Allow-Credentials', 'true');
 
@@ -95,6 +102,6 @@ export class AuthController {
       sameSite: 'none',
       domain: 'localhost',
     });
-    return true;
+    return ResponseOutPut.OK(null);
   }
 }
