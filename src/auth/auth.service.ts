@@ -6,14 +6,14 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { IAuthRepository } from './auth.interface';
-import { CheckEmailDto } from './dto/CheckEmail.dto';
-import { CreateUserDto } from './dto/CreateUserDto';
+import { CheckEmailDto } from './dto/input/CheckEmail.dto';
 import * as bcrypt from 'bcrypt';
-import { LoginUserDto } from './dto/LoginUserDto';
 import { ICacheRepository } from 'src/cache/cache.interface';
-import { CompareCode } from './dto/CompareCode.dto';
 import { Random } from 'src/utils/Random';
-import { UpdatePasswordInputDto } from './dto/UpdatePassword.input.dto';
+import { CreateUserDto } from './dto/input/CreateUserDto';
+import { UpdatePasswordInputDto } from './dto/input/UpdatePassword.input.dto';
+import { CompareCode } from './dto/input/CompareCode.dto';
+import { LoginUserDto } from './dto/input/LoginUserDto';
 
 @Injectable()
 export class AuthService {
@@ -24,15 +24,15 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async createUser(body: CreateUserDto) {
+  async createUser(body: CreateUserDto): Promise<void> {
     const { password } = body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const nickname = this.random.makeDefaultNickname();
 
-    return this.authRepository.createUser(body, hashedPassword, nickname);
+    this.authRepository.createUser(body, hashedPassword, nickname);
   }
 
-  async checkEmail(body: CheckEmailDto, sendEmail) {
+  async checkEmail(body: CheckEmailDto, sendEmail): Promise<void> {
     const { email } = body;
     const isUser = await this.authRepository.findUserByEmail(email);
 
@@ -52,17 +52,16 @@ export class AuthService {
     throw new BadRequestException('이미 가입된 계정이 있습니다.');
   }
 
-  async generateCode(body: CheckEmailDto, sendEmail) {
+  async generateCode(body: CheckEmailDto, sendEmail): Promise<void> {
     const { email } = body;
     const isUser = await this.authRepository.findUserByEmail(email);
 
     const randomNumber = this.random.makeRand6Num();
     await this.cacheRepository.set(email, randomNumber, 180);
     sendEmail(email, randomNumber);
-    return { success: true, code: 200, data: 'success' };
   }
 
-  async changePassword(body: UpdatePasswordInputDto) {
+  async changePassword(body: UpdatePasswordInputDto): Promise<void> {
     const { email, password, codeNumber } = body;
 
     const RandomCode = await this.cacheRepository.get(email);
@@ -73,7 +72,6 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     await this.authRepository.changePassword(email, hashedPassword);
-    return { success: true, code: 200, data: 'success' };
   }
 
   async compareEmailCode(body: CompareCode) {
@@ -96,16 +94,19 @@ export class AuthService {
     }
 
     //사용자가 요청한 비밀번호와 DB에서 조회한 비밀번호 일치여부 검사
-    const checkedUser = await bcrypt.compare(password, user.password);
+    const checkedUser = await bcrypt.compare(password, user._password);
 
     if (!checkedUser) {
       throw new BadRequestException('유저 정보를 잘못 입력하셨습니다');
     }
 
-    return await this.jwtGenerate(user.id, key);
+    return await this.jwtGenerate(user._id, key);
   }
 
-  async jwtGenerate(userId: number, key: string) {
+  async jwtGenerate(
+    userId: number,
+    key: string,
+  ): Promise<{ accessToken: string; userId: number }> {
     let jwtExpireTime;
     let jwtSecretKey;
 
@@ -130,11 +131,11 @@ export class AuthService {
       userId: userId,
     };
   }
-  async pushRefreshToken(userId: string, refreshToken: string) {
+  async pushRefreshToken(userId: string, refreshToken: string): Promise<void> {
     await this.cacheRepository.set(userId, refreshToken, 1209600);
   }
 
-  async deleteRefreshToken(userId: string) {
+  async deleteRefreshToken(userId: string): Promise<void> {
     await this.cacheRepository.del(userId);
   }
 

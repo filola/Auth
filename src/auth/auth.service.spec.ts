@@ -6,10 +6,8 @@ import { Random } from 'src/utils/Random';
 import { IAuthRepository } from './auth.interface';
 import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
-import { CheckEmailDto } from './dto/CheckEmail.dto';
-import { CompareCode } from './dto/CompareCode.dto';
-import { CreateUserDto } from './dto/CreateUserDto';
-import { LoginUserDto } from './dto/LoginUserDto';
+import { CheckEmailDto } from './dto/input/CheckEmail.dto';
+import { CreateUserDto } from './dto/input/CreateUserDto';
 import { JwtStrategy } from './passport/jwt.strategy';
 
 class FakeAuthRepository implements IAuthRepository {

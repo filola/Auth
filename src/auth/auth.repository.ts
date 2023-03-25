@@ -1,8 +1,8 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/CreateUserDto';
 import { BadRequestException } from '@nestjs/common';
+import { CreateUserDto } from './dto/input/CreateUserDto';
 
 export class AuthRepository {
   constructor(
