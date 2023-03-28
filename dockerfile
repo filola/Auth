@@ -1,38 +1,33 @@
-# STEP 1 (build)
+# 이미지 생성
 FROM node:16.14 AS builder
 
-WORKDIR /usr/src/app
+# 작업 디렉토리 생성
+WORKDIR /app
 
-# RUN npm i -g @nestjs/cli typescript ts-node
-
+# 의존성 설치
 COPY package*.json ./
+RUN npm ci --only=production
 
-# COPY node_modules ./
-
-RUN npm install --save -f
-
-RUN npm install pm2 -f
-
-RUN npm install dd-trace -f
-
-RUN npx pm2 install typescript
-
-COPY ./ ./
-
+# 소스코드 복사 및 빌드
+COPY . .
 RUN npm run build
 
-RUN ls -al
+# 실행 환경 설정
+FROM node:16.14-alpine
+WORKDIR /app
+ENV NODE_ENV=production
 
-RUN ls /usr/src/app/dist -al
+# 소스코드 복사
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
 
-# STEP 2 (deploy)
-FROM node:16.14-alpine AS deploy
-
-WORKDIR /usr/src/app
-
-COPY --from=builder /usr/src/app ./
+# npm pm2 문제
+RUN npm install pm2 -f
+RUN npm install dd-trace -f
+RUN npx pm2 install typescript
 
 EXPOSE 3000
 
+# 앱 실행
 CMD ["npm", "run", "start:prod"]
-# CMD ["npm", "run", "start:dev"]
