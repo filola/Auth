@@ -13,7 +13,7 @@ import { LoginUserDto } from './dto/LoginUserDto';
 import { ICacheRepository } from 'src/cache/cache.interface';
 import { CompareCode } from './dto/CompareCode.dto';
 import { Random } from 'src/utils/Random';
-import { UpdatePasswordInputDto } from './dto/UpdatePassword.input.dto';
+import { UpdatePasswordInputDto } from './dto/input/UpdatePassword.input.dto';
 
 @Injectable()
 export class AuthService {
