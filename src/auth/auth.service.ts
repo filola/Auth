@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { IAuthRepository } from './auth.interface';
-import { CheckEmailDto } from './dto/CheckEmail.dto';
+import { CheckEmailDto } from './dto/input/CheckEmail.dto';
 import { CreateUserDto } from './dto/CreateUserDto';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/LoginUserDto';

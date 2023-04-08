@@ -6,7 +6,7 @@ import { Random } from 'src/utils/Random';
 import { IAuthRepository } from './auth.interface';
 import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
-import { CheckEmailDto } from './dto/CheckEmail.dto';
+import { CheckEmailDto } from './dto/input/CheckEmail.dto';
 import { CompareCode } from './dto/CompareCode.dto';
 import { CreateUserDto } from './dto/CreateUserDto';
 import { LoginUserDto } from './dto/LoginUserDto';
